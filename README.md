@@ -5,18 +5,19 @@ Version 0.0.1 Created by Evan Coury
 Introduction
 ------------
 This is an exmple of how a "user" module could work in Zend Framework 2. This is
-not **the** user module, or how it **will** work; it's just an example to help
-me think through different module use-cases. This is pre-beta, pre-alpha,
+not **the** user module, or how it **will** work; it's just a prototype **to help
+me think through different module use-cases**. This is pre-beta, pre-alpha,
 not-fit-for-use-in-any-way-shape-or-form code!
 
 Stuff to figure out
 -------------------
 Some of this may be stuff we leave outside of the scope of ZF2 and up to module
 developers, but it's worth mentioning it all, none-the-less. In those cases, it
-may still be good to provide examples or suggestions for best practices. This
-list does _not_ contain any proposals for solutions. Please check the ZF2 wiki
-and ZF-Contributors mailing list; as there have been many suggestions and
-discussions proposing solutions to some of the issues listed below.
+may still be good to provide examples or suggestions for best practices (this
+repository is not meant to be such an example, see above). The following does 
+_not_ contain any of the proposed solutions. Please see the ZF2 wiki and 
+ZF-Contributors mailing list; as there have been many suggestions and discussions 
+proposing solutions to some of the issues listed below.
 
 * **Overall**
     * How can modules cleanly "share" resources? For example, you have 5 modules
