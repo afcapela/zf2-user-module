@@ -1,0 +1,6 @@
+<h1>Register</h1>
+<?php
+$form = $this->vars('registerForm');
+$form->setAction($this->broker('url')->direct(array('controller' => 'user', 'action' => 'registerpost'), array('name' => 'default')));
+$form->setView($this);
+echo $form;

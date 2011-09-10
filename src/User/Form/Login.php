@@ -34,13 +34,6 @@ class Login extends Form
             'label'    => 'Sign In',
         ));
 
-        //$this->setDecorators(array(
-        //    'FormElements',
-        //    array('HtmlTag', array('tag' => 'dl', 'class' => 'form')),
-        //    array('Description', array('placement' => 'prepend', 'class' => 'error')),
-        //    'Form'
-        //));
-        
         /*
          * Not currently working on ZF2 master
         $this->addElement('hash', 'csrf', array(

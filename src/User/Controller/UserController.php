@@ -30,6 +30,13 @@ class UserController extends ActionController
         );
     }
 
+    public function registerAction()
+    {
+        return array(
+            'registerForm' => $this->userService->getRegisterForm()
+        );
+    }
+
     public function setRouter(RouteStack $router)
     {
         $this->router = $router;
