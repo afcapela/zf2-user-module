@@ -3,10 +3,14 @@
 namespace User\Controller;
 
 use Zf2Mvc\Controller\ActionController,
-    Zf2Mvc\Router\RouteStack;
+    Zf2Mvc\Router\RouteStack,
+    User\Service\User as UserService;
 
 class UserController extends ActionController
 {
+    protected $router;
+    protected $userService;
+
     public function indexAction()
     {
         $redirect = $this->router->assemble(
@@ -21,12 +25,20 @@ class UserController extends ActionController
 
     public function loginAction()
     {
-        return array();
+        return array(
+            'loginForm' => $this->userService->getLoginForm()
+        );
     }
 
     public function setRouter(RouteStack $router)
     {
         $this->router = $router;
+        return $this;
+    }
+    
+    public function setUserService(UserService $userService)
+    {
+        $this->userService = $userService;
         return $this;
     }
 }

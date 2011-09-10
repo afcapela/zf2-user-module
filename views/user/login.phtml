@@ -1,1 +1,6 @@
-<h1>Login</h1>
+<h1>Sign In</h1>
+<?php
+$form = $this->vars('loginForm');
+$form->setAction($this->broker('url')->direct(array('controller' => 'user', 'action' => 'auth'), array('name' => 'default')));
+$form->setView($this);
+echo $form;

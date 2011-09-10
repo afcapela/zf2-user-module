@@ -7,6 +7,7 @@ return array(
         'User\Controller\UserController' => array(
             'parameters' => array(
                 'router' => 'Zf2Mvc\Router\SimpleRouteStack',
+                'userService' => 'User\Service\User',
             ),
         ),
         'Zend\View\PhpRenderer' => array('methods' => array(
