@@ -2,9 +2,10 @@
 
 namespace User\Model;
 
-use \DateTime;
+use Edp\Common\Model,
+    \DateTime;
 
-class User
+class User extends Model
 {
     /**
      * @var int

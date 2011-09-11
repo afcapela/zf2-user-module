@@ -6,9 +6,9 @@ use Zend\Form\Form;
 
 class Register extends Base
 {
-    public function init()
+    public function initLate()
     {
-        parent::init();
+        parent::initLate();
         $this->removeElement('userId');
         $this->getElement('submit')->setLabel('Register');
     }

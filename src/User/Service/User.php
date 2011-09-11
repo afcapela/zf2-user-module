@@ -4,7 +4,8 @@ namespace User\Service;
 
 use Zend\Form\Form,
     User\Form\Login as LoginForm,
-    User\Form\Register as RegisterForm;
+    User\Form\Register as RegisterForm,
+    Edp\Common\DbMapper;
 
 class User
 {
@@ -17,6 +18,11 @@ class User
      * @var Zend\Form\Form
      */
     protected $registerForm;
+
+    /**
+     * @var Edp\Common\DbMapper
+     */
+    protected $userMapper;
 
     /**
      * Get loginForm.
@@ -65,6 +71,27 @@ class User
     public function setRegisterForm(Form $registerForm)
     {
         $this->registerForm = $registerForm;
+        return $this;
+    }
+ 
+    /**
+     * Get userMapper.
+     *
+     * @return Edp\Common\DbMapper
+     */
+    public function getUserMapper()
+    {
+        return $this->userMapper;
+    }
+ 
+    /**
+     * Set userMapper.
+     *
+     * @param $userMapper the value to be set
+     */
+    public function setUserMapper(DbMapper $userMapper)
+    {
+        $this->userMapper = $userMapper;
         return $this;
     }
 }

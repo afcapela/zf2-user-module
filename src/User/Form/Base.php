@@ -2,11 +2,14 @@
 
 namespace User\Form;
 
-use Zend\Form\Form;
+use Zend\Form\Form,
+    Edp\Common\DbMapper;
 
 class Base extends Form
 {
-    public function init()
+    protected $userMapper;
+
+    public function initLate()
     {
         $this->setMethod('post');
 
@@ -14,6 +17,11 @@ class Base extends Form
             'filters'    => array('StringTrim'),
             'validators' => array(
                 'EmailAddress',
+                array('Db\NoRecordExists', true, array(
+                    'adapter'   => $this->userMapper->getReadAdapter(),
+                    'table'     => $this->userMapper->getTableName(),
+                    'field'     => 'email'
+                ))
             ),
             'required'   => true,
             'label'      => 'Email',
@@ -54,6 +62,19 @@ class Base extends Form
             'filters'    => array('StringTrim'),
             'required'   => true,
         ));
+    }
+ 
+    /**
+     * Set userMapper.
+     *
+     * @param $userMapper the value to be set
+     */
+    public function setUserMapper(DbMapper $userMapper)
+    {
+        $this->userMapper = $userMapper;
+        // There's gotta be a better way?
+        $this->initLate();
+        return $this;
     }
 }
 

@@ -9,6 +9,11 @@ not **the** user module, or how it **will** work; it's just a prototype **to hel
 me think through different module use-cases**. This is pre-beta, pre-alpha,
 not-fit-for-use-in-any-way-shape-or-form code!
 
+Dependencies
+------------
+This module depends on my [EdpCommon](https://github.com/EvanDotPro/zf2-edp-common)
+for abstract model and mapper classes.
+
 Stuff to figure out
 -------------------
 Some of this may be stuff we leave outside of the scope of ZF2 and up to module
