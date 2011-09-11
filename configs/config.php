@@ -20,6 +20,7 @@ $config = array(
                 'userMapper'   => 'User\Model\Mapper\User',
                 'registerForm' => 'User\Form\Register',
                 'loginForm'    => 'User\Form\Login',
+                'auth'         => 'Zend\Authentication\AuthenticationService',
             ),
         ),
         'User\Model\Mapper\User' => array(

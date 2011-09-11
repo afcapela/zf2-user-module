@@ -6,7 +6,9 @@ use Zend\Form\Form,
     User\Form\Login as LoginForm,
     User\Form\Register as RegisterForm,
     Edp\Common\DbMapper,
-    User\Model\User as UserModel;
+    User\Model\User as UserModel,
+    Zend\Authentication\AuthenticationService,
+    Zend\Authentication\Adapter;
 
 class User
 {
@@ -24,6 +26,70 @@ class User
      * @var Edp\Common\DbMapper
      */
     protected $userMapper;
+
+    /**
+     * @var Zend\Authentication\AuthenticationService
+     */
+    protected $auth;
+
+    /**
+     * @var Zend\Authentication\Adapter
+     */
+    protected $authAdapter;
+
+    public function authenticate($email, $password)
+    {
+        $userModel = $this->userMapper->getUserByEmail($email, true);
+        if (!$userModel) return false;
+        $password  = $this->hashPassword($password, $userModel->getSalt());
+        $adapter   = $this->getAuthAdapter($email, $password);
+        $auth      = $this->getAuth();
+        $result    = $auth->authenticate($adapter);
+        if (!$result->isValid()) {
+            return false;
+        }
+        $auth->getStorage()->write($userModel);
+        $this->userMapper->updateLastLogin($userModel);
+        return true;
+    }
+
+    public function logout()
+    {
+        $this->getAuth()->clearIdentity();
+    }
+
+    public function getAuth()
+    {
+        if (null === $this->auth) {
+            $this->auth = new AuthenticationService;
+        }
+        return $this->auth;
+    }
+
+    public function setAuth($auth)
+    {
+        $this->auth = $auth;
+    }
+
+    public function getAuthAdapter($email, $password)
+    {
+        if (null === $this->authAdapter) {
+            $authAdapter = new Adapter\DbTable(
+                $this->userMapper->getReadAdapter(),
+                $this->userMapper->getTableName(),
+                'email',
+                'password'
+            );
+            $this->setAuthAdapter($authAdapter);
+        }
+        $this->authAdapter->setIdentity($email)->setCredential($password);
+        return $this->authAdapter;
+    }
+
+    public function setAuthAdapter(Adapter $adapter)
+    {
+        $this->authAdapter = $adapter;
+    }
 
     public function createFromForm(Form $form)
     {

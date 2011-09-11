@@ -17,15 +17,40 @@ class UserController extends ActionController
 
     public function indexAction()
     {
-        return $this->redirect('user', 'login');
+        if (!$this->userService->getAuth()->hasIdentity()) {
+            return $this->redirect('user', 'login');
+        }
+        return array('user' => $this->userService->getAuth()->getIdentity());
     }
 
     public function loginAction()
     {
-        $form = $this->userService->getLoginForm();
+        if ($this->userService->getAuth()->hasIdentity()) {
+            return $this->redirect('user', 'index');
+        }
+        $request    = $this->getRequest();
+        $form       = $this->getLoginForm();
+        if ($request->isPost()) {
+            $auth = $this->userService->authenticate(
+                $request->post()->get('email'),
+                $request->post()->get('password')
+            );
+            if ($auth) {
+                return $this->redirect('user', 'index');
+            } else {
+                $this->getFlashMessenger('login')->addMessage('Authentication failed. Please try again.');
+                return $this->redirect('user', 'login');
+            }
+        }
         return array(
             'loginForm' => $form,
         );
+    }
+
+    public function logoutAction()
+    {
+        $this->userService->logout();
+        return $this->redirect('user','login');
     }
 
     public function registerAction()
@@ -60,16 +85,24 @@ class UserController extends ActionController
 
     public function getRegisterForm()
     {
-        if (!$this->registerForm) {
+        if (null === $this->registerForm) {
             $this->registerForm = $this->userService->getRegisterForm();
             $fm = $this->getFlashMessenger('register')->getMessages(); 
             if (count($fm) > 0) $this->registerForm->isValid($fm[0]);
         }
         return $this->registerForm;
     }
- 
-    // A lot of this will probably be cleaned up:
 
+    public function getLoginForm()
+    {
+        if (null === $this->loginForm) {
+            $this->loginForm = $this->userService->getLoginForm();
+            $fm = $this->getFlashMessenger('login')->getMessages(); 
+            if (count($fm) > 0) $this->loginForm->setDescription($fm[0]);
+        }
+        return $this->loginForm;
+    }
+ 
     protected function redirect($controller, $action)
     {
         $redirect = $this->router->assemble(

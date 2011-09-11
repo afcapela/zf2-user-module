@@ -9,6 +9,25 @@ use Edp\Common\DbMapper,
 class User extends DbMapper
 {
     protected $tableName = 'user';
+    protected $fields;
+
+    public function init()
+    {
+        $this->fields = array('*',
+            'last_ip'      => new Expr('INET_NTOA(`last_ip`)'),
+            'register_ip'  => new Expr('INET_NTOA(`register_ip`)')
+        );
+    }
+
+    public function getUserByEmail($email)
+    {
+        $db = $this->getReadAdapter();
+        $sql = $db->select()
+            ->from($this->getTableName(), $this->fields)
+            ->where('email = ?', $email);
+        $row = $db->fetchRow($sql);
+        return UserModel::fromArray($row);
+    }
 
     public function insert(UserModel $user)
     {
@@ -26,5 +45,15 @@ class User extends DbMapper
         $userId = $db->lastInsertId();
         $user->setUserId($userId);
         return $user;
+    }
+    
+    public function updateLastLogin($user)
+    {
+        $data = array(
+            'last_login' => new Expr('NOW()'),
+            'last_ip'    => new Expr("INET_ATON('{$_SERVER['REMOTE_ADDR']}')")
+        );
+        $db = $this->getWriteAdapter();
+        return $db->update($this->getTableName(), $data, $db->quoteInto('user_id = ?', $user->getUserId()));
     }
 }
