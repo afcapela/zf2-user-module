@@ -37,6 +37,7 @@ class UserController extends ActionController
                 $this->getFlashMessenger('register')->addMessage($request->post()->toArray());
                 return $this->redirect('user', 'register');
             } else {
+                $this->userService->createFromForm($form);
                 return $this->redirect('user', 'index');
             }
         }

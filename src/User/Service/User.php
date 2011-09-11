@@ -5,7 +5,8 @@ namespace User\Service;
 use Zend\Form\Form,
     User\Form\Login as LoginForm,
     User\Form\Register as RegisterForm,
-    Edp\Common\DbMapper;
+    Edp\Common\DbMapper,
+    User\Model\User as UserModel;
 
 class User
 {
@@ -23,6 +24,16 @@ class User
      * @var Edp\Common\DbMapper
      */
     protected $userMapper;
+
+    public function createFromForm(Form $form)
+    {
+        $user = new UserModel();
+        $user->setEmail($form->getValue('email'))
+             ->setDisplayName($form->getValue('display_name'))
+             ->setSalt($this->randomBytes(16))
+             ->setPassword($this->hashPassword($form->getValue('password'), $user->getSalt()));
+        $userId = $this->getUserMapper()->insert($user);
+    }
 
     /**
      * Get loginForm.
@@ -93,5 +104,47 @@ class User
     {
         $this->userMapper = $userMapper;
         return $this;
+    }
+
+    /**
+     * hashPassword 
+     * 
+     * @param string $password 
+     * @param string $salt 
+     * @return string
+     */
+    public function hashPassword($password, $salt)
+    {
+        return hash('sha512', $password.$salt);
+    }
+
+    /**
+     * randomBytes 
+     *
+     * returns X random raw binary bytes
+     * 
+     * @param int $byteLength 
+     * @return string
+     */
+    public function randomBytes($byteLength)
+    {
+        if (function_exists('openssl_random_pseudo_bytes')) {
+           $data = openssl_random_pseudo_bytes($byteLength);
+        } elseif (is_readable('/dev/urandom')) {
+            $fp = @fopen('/dev/urandom','rb');
+            if ($fp !== false) {
+                $data = fread($fp, $byteLength);
+                fclose($fp);
+            }
+        } elseif (class_exists('COM')) {
+            // @TODO: Someone care to test on Windows? Not it!
+            try {
+                $capi = new COM('CAPICOM.Utilities.1');
+                $data = $capi->GetRandom($btyeLength,0);
+            } catch (Exception $ex) {
+                // Fail silently
+            }
+        }
+        return $data;
     }
 }
